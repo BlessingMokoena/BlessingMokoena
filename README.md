@@ -12,17 +12,26 @@ I also intend to explore databases such as MySQL or MongoDB to understand how to
 
 ## Current Skills
 HTML: Proficient in creating structured web pages.
+
 CSS: Knowledgeable in styling web pages and creating responsive designs.
+
 JavaScript: Familiar with core concepts and basic DOM manipulation.
+
 Python: Limited knowledge, primarily focused on basic syntax and concepts.
+
 Java: Limited knowledge, with an understanding of basic programming principles.
 
 ## Resources
 To aid in my learning journey, I utilize the following resources:
+
 W3Schools: For tutorials and references on web technologies.
+
 Codecademy: For interactive coding exercises and structured learning paths.
+
 freeCodeCamp: For a comprehensive curriculum that covers both front-end and back-end development.
+
 YouTube: For video tutorials and explanations on various programming topics.
+
 MDN Web Docs: For in-depth documentation on web standards and best practices.
 
 ## Future Plans
