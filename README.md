@@ -1,58 +1,52 @@
-## Hi there 👋
-I am Blessing, a student aspiring to become a full-stack web developer. Currently, I am focusing on front-end development, where I am building my skills in HTML, CSS, and JavaScript. I also have a limited knowledge of Python and Java, which I plan to expand as I progress in my studies.
+Hi there 👋
 
-## Learning Goals
-### Front-End Development:
-I aim to become proficient in front-end technologies, including advanced JavaScript frameworks like React or Vue.js, within the next year.
-I want to deepen my understanding of user interface design and user experience principles to create visually appealing and user-friendly websites.
+I am Blessing Mokoena, a highly motivated and versatile Full Stack Web Developer and IT Technician. I'm passionate about building dynamic, user-focused web applications and providing exceptional IT support. My expertise spans both front-end and back-end development, along with strong skills in hardware, software, and network troubleshooting.
 
-### Back-End Development:
-As I gain confidence in front-end development, I plan to start learning back-end technologies, including Python (with frameworks like Flask or Django) and Java (with Spring).
-I also intend to explore databases such as MySQL or MongoDB to understand how to manage data effectively.
+**My Core Competencies:**
 
-## Current Skills
-HTML: Proficient in creating structured web pages.
+*   **Full Stack Development:** Proficient in creating comprehensive web solutions, from user interface to server-side logic.
+*   **Front-End Expertise:** Strong command of HTML5, CSS3 (including Grid & Flexbox), JavaScript (ES6+), TypeScript, React.js (including hooks), Vue.js, Tailwind CSS, Bootstrap, and Material UI 
+*   **Back-End Development:** Experienced in building RESTful APIs using Node.js with Express.js, as well as server-side programming using Python (Django/Flask) and PHP 
+*   **Database Management:** Skilled in SQL databases (MySQL, PostgreSQL) and NoSQL databases like MongoDB .
+*   **IT Support:** Experienced in troubleshooting Windows and Linux operating systems, hardware repairs/upgrades, installing operating systems, configuring network devices, and using helpdesk ticketing systems such as Jira or ServiceNow 
+*   **Other Technical Skills:** Proficient in version control with Git/GitHub, testing tools like Jest and Cypress, performance optimization techniques (code splitting, lazy loading, caching), and CI/CD tools like Jenkins or GitHub Actions 
 
-CSS: Knowledgeable in styling web pages and creating responsive designs.
+**Projects:**
 
-JavaScript: Familiar with core concepts and basic DOM manipulation.
+*   **Personal Medication Reminder App:** A mobile-friendly app developed using React.js, Node.js, and MongoDB, featuring scheduled medication reminders with push notifications and secure user authentication using JWT 
+*   **Outdoor Activities E-Commerce Website:** A responsive e-commerce platform for outdoor gear retailers, designed using HTML, CSS3, and JavaScript(ES6), with integrated payment processing and real-time inventory tracking using the Stripe API 
+*   **Butcher Store Website:** A dynamic website for a local butcher shop built using PHP, MySQL, and Bootstrap, featuring an online ordering system and an admin dashboard for order management 
+  *   *See my pinned repositories for these projects.*
 
-Python: Limited knowledge, primarily focused on basic syntax and concepts.
+**Certifications:**
 
-Java: Limited knowledge, with an understanding of basic programming principles.
+*   Cisco Networking Academy: IT Essentials, Switching & Routing 
+*   Responsive Web Design Certification (freeCodeCamp) 
+*   JavaScript Algorithms and Data Structures Certification (freeCodeCamp) 
+*   Python for Everybody Specialization (Coursera) 
 
-## Resources
-To aid in my learning journey, I utilize the following resources:
 
-W3Schools: For tutorials and references on web technologies.
+**Learning Goals:**
 
-Codecademy: For interactive coding exercises and structured learning paths.
+*   Continue mastering full-stack web development to build sophisticated and scalable web applications 
+*   Explore emerging technologies including Artificial Intelligence, Machine Learning, Cloud Computing, Blockchain and Quantum Computing 
+*   Contribute to innovative software solutions and enhance user experiences 
+*   Expand knowledge of IT infrastructure management and cybersecurity practices 
 
-freeCodeCamp: For a comprehensive curriculum that covers both front-end and back-end development.
+**Soft Skills:**
 
-YouTube: For video tutorials and explanations on various programming topics.
+*   Strong problem-solving and debugging skills
+*   Excellent communication skills, capable of explaining technical concepts to non-technical audiences 
+*   Experienced in collaborative teamwork using Agile methodologies and tools like Jira and Trello 
+*   Meticulous attention to detail and commitment to clean, maintainable code 
 
-MDN Web Docs: For in-depth documentation on web standards and best practices.
+**Areas of Interest:**
 
-## Future Plans
-### Full-Stack Development:
-My ultimate goal is to become a full-stack developer, capable of building complete web applications from the ground up.
+*   Progressive Web Apps (PWAs) 
+*   Artificial Intelligence & Machine Learning 
+*   Cloud Computing 
+*   Blockchain Development 
+*  Cybersecurity
+*   Quantum Computing 
 
-### Career Aspirations:
-I hope to work on real-world projects, either through internships or freelance opportunities, to gain practical experience and enhance my portfolio.
-
-I am excited about the journey ahead and committed to continuous learning and improvement in my programming skills. I look forward to applying my knowledge in both personal projects and professional endeavors.
-<!--
-**BlessingMokoena/BlessingMokoena** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-
-Here are some ideas to get you started:
-
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+I am committed to continuous learning and improvement, eager to apply my skills in both personal projects and professional endeavors. Let's connect!
