@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Koena - Cybersecurity & Networking Portfolio</title>
+    <style>
+        /* ---------- CSS (unchanged design but inline for single file) ---------- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary-color: #00ff41;
+            --secondary-color: #00d9ff;
+            --accent-color: #ff0080;
+            --dark-bg: #0a0e27;
+            --darker-bg: #050810;
+            --light-bg: #1a1f3a;
+            --text-primary: #e0e7ff;
+            --text-secondary: #94a3b8;
+            --cyber-blue: #00d9ff;
+            --cyber-purple: #8b5cf6;
+        }
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Canvas backgrounds */
+        .network-canvas, .matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .network-canvas { opacity: 0.4; z-index: 0; }
+        .matrix-canvas { opacity: 0.15; z-index: 1; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 10; }
+
+        /* Navigation */
+        .navbar {
+            position: fixed; top: 0; width: 100%;
+            background: rgba(10, 14, 39, 0.85); backdrop-filter: blur(10px);
+            z-index: 1000; padding: 1rem 0; border-bottom: 2px solid rgba(0,255,65,0.2);
+            box-shadow: 0 4px 30px rgba(0,255,65,0.1);
+        }
+        .navbar .container { display:flex; justify-content:space-between; align-items:center; }
+        .logo { font-size:1.5rem; font-weight:bold; display:flex; align-items:center; gap:10px; }
+        .logo-icon { font-size:1.8rem; animation: pulse 2s ease-in-out infinite; }
+        .logo-text { background: linear-gradient(135deg,var(--primary-color),var(--secondary-color)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .nav-menu { display:flex; list-style:none; gap:2rem; }
+        .nav-link { color:var(--text-secondary); text-decoration:none; padding:5px 0; position:relative; transition: all .3s; }
+        .nav-link::before { content:''; position:absolute; bottom:0; left:0; width:0; height:2px; background:var(--primary-color); transition:width .3s; box-shadow:0 0 10px var(--primary-color); }
+        .nav-link:hover { color:var(--primary-color); text-shadow:0 0 10px rgba(0,255,65,.5); }
+        .nav-link:hover::before { width:100%; }
+        .hamburger { display:none; flex-direction:column; cursor:pointer; gap:5px; }
+        .hamburger span { width:25px; height:3px; background:var(--primary-color); box-shadow:0 0 10px rgba(0,255,65,.5); transition:0.3s; }
+
+        /* Hero */
+        .hero { min-height:100vh; display:flex; align-items:center; justify-content:center; position:relative; padding-top:80px; }
+        .hero-content { text-align:center; animation: fadeInUp 1s ease; z-index:10; }
+        .terminal-window { background: rgba(10,14,39,.9); border:1px solid var(--primary-color); border-radius:8px; margin-bottom:2rem; box-shadow:0 0 30px rgba(0,255,65,.3); max-width:400px; margin-left:auto; margin-right:auto; overflow:hidden; }
+        .terminal-header { background: rgba(0,255,65,0.1); padding:8px 12px; display:flex; gap:6px; }
+        .terminal-dot { width:12px; height:12px; border-radius:50%; }
+        .terminal-dot.red { background:#ff5f56; } .terminal-dot.yellow { background:#ffbd2e; } .terminal-dot.green { background:#27c93f; }
+        .terminal-body { padding:15px; font-family: 'Courier New', monospace; font-size:.9rem; }
+        .terminal-line { color:var(--primary-color); margin-bottom:5px; }
+        .terminal-output { color:var(--secondary-color); }
+
+        .hero-title { font-size:4rem; margin-bottom:1rem; font-weight:700; }
+        .highlight { background: linear-gradient(135deg,var(--primary-color),var(--secondary-color)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .glitch { animation: glitch 3s infinite; }
+
+        @keyframes glitch {
+            0%,100% { text-shadow:none; }
+            20% { text-shadow:-2px 0 var(--accent-color); }
+            40% { text-shadow:2px 0 var(--cyber-blue); }
+            60% { text-shadow:-2px 0 var(--primary-color); }
+        }
+
+        .hero-subtitle { font-size:1.3rem; color:var(--text-secondary); margin-bottom:2.5rem; max-width:800px; margin-left:auto; margin-right:auto; }
+        .hero-buttons { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+        .btn { padding:.875rem 2rem; border-radius:8px; font-weight:600; transition:all .3s; display:inline-flex; align-items:center; gap:8px; cursor:pointer; text-decoration:none; font-size:1rem; border:none; }
+        .btn-primary { background:linear-gradient(135deg,var(--primary-color),var(--secondary-color)); color:var(--dark-bg); font-weight:bold; box-shadow:0 0 20px rgba(0,255,65,.3); }
+        .btn-primary:hover { transform:translateY(-3px); box-shadow:0 10px 30px rgba(0,255,65,.5); }
+        .btn-secondary { background:transparent; color:var(--primary-color); border:2px solid var(--primary-color); }
+        .btn-secondary:hover { background:rgba(0,255,65,.1); transform:translateY(-3px); box-shadow:0 0 20px rgba(0,255,65,.3); }
+
+        .scroll-indicator { position:absolute; bottom:30px; left:50%; transform:translateX(-50%); z-index:10; }
+        .scroll-indicator span { display:block; width:24px; height:40px; border:2px solid var(--primary-color); border-radius:20px; box-shadow:0 0 10px rgba(0,255,65,.3); position:relative; }
+        .scroll-indicator span::before { content:''; position:absolute; top:8px; left:50%; width:6px; height:6px; background:var(--primary-color); border-radius:50%; transform:translateX(-50%); animation: scroll 2s infinite; box-shadow:0 0 10px var(--primary-color); }
+
+        /* Sections */
+        .about, .projects, .contact { padding:100px 0; position:relative; z-index:10; background: rgba(26,31,58,0.5); backdrop-filter: blur(10px); }
+        .section-title { text-align:center; font-size:2.5rem; margin-bottom:3rem; display:flex; align-items:center; justify-content:center; gap:15px; position:relative; }
+        .section-title::after { content:''; position:absolute; bottom:-10px; left:50%; transform:translateX(-50%); width:100px; height:4px; background: linear-gradient(135deg,var(--primary-color),var(--secondary-color)); border-radius:2px; box-shadow:0 0 10px var(--primary-color); }
+        .about-text p { color:var(--text-secondary); margin-bottom:1.5rem; font-size:1.1rem; line-height:1.8; }
+        .skills { display:flex; flex-wrap:wrap; gap:1rem; margin-top:2.5rem; justify-content:center; }
+        .skill-tag { padding:.6rem 1.4rem; background: rgba(0,255,65,.1); border:1px solid var(--primary-color); border-radius:25px; color:var(--primary-color); font-size:.9rem; transition:all .3s; box-shadow:0 0 10px rgba(0,255,65,.2); }
+        .skill-tag:hover { background:var(--primary-color); color:var(--dark-bg); transform:translateY(-5px); box-shadow:0 5px 20px rgba(0,255,65,.5); }
+
+        .projects-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap:2.5rem; margin-top:3rem; }
+        .project-card { background: rgba(26,31,58,.6); backdrop-filter:blur(10px); border:1px solid rgba(0,255,65,.2); border-radius:16px; overflow:hidden; transition:all .4s; box-shadow:0 4px 20px rgba(0,0,0,.3); }
+        .project-card:hover { transform:translateY(-10px); border-color:var(--primary-color); box-shadow:0 10px 40px rgba(0,255,65,.3); }
+        .project-image { height:200px; position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+        .project-icon { font-size:4rem; filter:brightness(1.5); z-index:1; transition:opacity .3s; }
+        .project-overlay { position:absolute; inset:0; background: rgba(10,14,39,.95); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .3s; }
+        .project-card:hover .project-overlay { opacity:1; }
+        .project-card:hover .project-icon { opacity:0; }
+        .project-link { color:var(--primary-color); text-decoration:none; padding:.75rem 1.5rem; border:2px solid var(--primary-color); border-radius:8px; font-weight:600; }
+        .project-link:hover { background:var(--primary-color); color:var(--dark-bg); box-shadow:0 0 20px rgba(0,255,65,.5); }
+        .project-info { padding:1.5rem; }
+        .project-info h3 { margin-bottom:.75rem; color:var(--text-primary); font-size:1.3rem; }
+        .project-info p { color:var(--text-secondary); margin-bottom:1rem; font-size:.95rem; line-height:1.6; }
+        .project-tags { display:flex; gap:.5rem; flex-wrap:wrap; }
+        .project-tags span { padding:.3rem .9rem; background: rgba(0,255,65,.1); border-radius:15px; font-size:.8rem; color:var(--primary-color); border:1px solid rgba(0,255,65,.3); }
+
+        .contact-content { max-width:600px; margin:0 auto; }
+        .contact-text { text-align:center; color:var(--text-secondary); margin-bottom:2.5rem; font-size:1.1rem; }
+        .contact-form { display:flex; flex-direction:column; gap:1.5rem; margin-bottom:2.5rem; }
+        .form-group input, .form-group textarea { width:100%; padding:1rem; background: rgba(10,14,39,.8); border:2px solid rgba(0,255,65,.2); border-radius:8px; color:var(--text-primary); font-family:inherit; transition:all .3s; font-size:1rem; }
+        .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--primary-color); box-shadow:0 0 20px rgba(0,255,65,.2); }
+
+        .social-links { display:flex; justify-content:center; gap:2rem; margin-top:2rem; }
+        .social-link { color:var(--text-secondary); text-decoration:none; display:flex; align-items:center; gap:8px; padding:8px 16px; border:1px solid rgba(0,255,65,.2); border-radius:8px; transition:all .3s; }
+        .social-link:hover { color:var(--primary-color); border-color:var(--primary-color); box-shadow:0 0 15px rgba(0,255,65,.3); transform:translateY(-3px); }
+
+        .footer { padding:2.5rem 0; text-align:center; color:var(--text-secondary); border-top:1px solid rgba(0,255,65,.2); position:relative; z-index:10; }
+        .footer-subtitle { margin-top:.5rem; font-size:.9rem; color:var(--text-secondary); }
+
+        /* Scroll Animation Classes */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .fade-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .pop-in {
+            opacity: 0;
+            transform: scale(0.5) rotate(-5deg);
+            transition: opacity 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .pop-in.visible {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        /* Stagger delays for children */
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+        .stagger-5 { transition-delay: 0.5s; }
+        .stagger-6 { transition-delay: 0.6s; }
+        .stagger-7 { transition-delay: 0.7s; }
+
+        /* Animations */
+        @keyframes fadeInUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes scroll { 0%{opacity:0; transform:translate(-50%,0);} 50%{opacity:1;} 100%{opacity:0; transform:translate(-50%,15px);} }
+        @keyframes pulse { 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.1); } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hamburger { display:flex; }
+            .nav-menu { position:fixed; left:-100%; top:70px; flex-direction:column; background: rgba(10,14,39,.98); width:100%; text-align:center; transition:0.3s; padding:2rem 0; border-top:2px solid var(--primary-color); }
+            .nav-menu.active { left:0; }
+            .hero-title { font-size:2.5rem; }
+            .hero-subtitle { font-size:1.1rem; padding:0 20px; }
+            .hero-buttons { flex-direction:column; align-items:center; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .section-title { font-size:2rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Network Background -->
+    <canvas id="networkCanvas" class="network-canvas"></canvas>
+    <!-- Matrix Rain Effect -->
+    <canvas id="matrixCanvas" class="matrix-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon" aria-hidden="true">🛡️</span>
+                <span class="logo-text">Koena</span>
+            </div>
+            <ul class="nav-menu" role="menubar">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger" aria-label="Toggle menu" role="button" tabindex="0">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content container">
+            <div class="terminal-window" aria-hidden="true">
+                <div class="terminal-header">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                </div>
+                <div class="terminal-body">
+                    <p class="terminal-line">$ whoami</p>
+                    <p class="terminal-output">koena@cybersec:~$</p>
+                </div>
+            </div>
+
+            <h1 class="hero-title">Hi, I'm <span class="highlight glitch" data-text="Koena">Koena</span></h1>
+            <p class="hero-subtitle typing-text">Networking mind, cybersecurity explorer, web developer at heart — powered by Python &amp; Linux.</p>
+            <div class="hero-buttons">
+                <a href="#projects" class="btn btn-primary"><span class="btn-icon">🚀</span> View My Work</a>
+                <a href="#contact" class="btn btn-primary"><span class="btn-icon">📧</span> Get In Touch</a>
+                <a href="C:\Users\FS 10\Documents\Koena Projects\KOENA-Portfolio\Current portfolio\Curriculum Vitae of Blessing.pdf" download="Curriculum Vitae of Blessing.pdf" class="btn btn-primary"><span class="btn-icon">📄</span> Download CV</a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span></span>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title fade-in-up"><span class="title-icon">👨‍💻</span> About Me</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p class="fade-in-left stagger-1">Hi, I'm a <strong>networking enthusiast</strong> with a passion for how devices communicate and how data flows across systems. From IP addresses and ports to routers and switches — networking sparked my interest in <strong>cybersecurity and penetration testing</strong>.</p>
+                    <p class="fade-in-left stagger-2">Alongside networking and security, I bring skills in <strong>web development, Python programming, and Linux administration</strong>. This lets me build creative solutions and adapt to new challenges.</p>
+                    <p class="fade-in-left stagger-3">I thrive on learning, experimenting, and applying my knowledge to real-world projects. See some of my work below.</p>
+                    <div class="skills" aria-hidden="false">
+                        <span class="skill-tag pop-in stagger-1">🌐 Networking Fundamentals &amp; Protocols</span>
+                        <span class="skill-tag pop-in stagger-2">🐧 Linux &amp; Command-Line Proficiency</span>
+                        <span class="skill-tag pop-in stagger-3">💻 Web Technologies (HTML/CSS/JS)</span>
+                        <span class="skill-tag pop-in stagger-4">🐍 Python Programming</span>
+                        <span class="skill-tag pop-in stagger-5">🔍 Troubleshooting &amp; Diagnostics</span>
+                        <span class="skill-tag pop-in stagger-6">🔒 Security Concepts &amp; Tools</span>
+                        <span class="skill-tag pop-in stagger-7">🎯 Penetration Testing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title fade-in-up"><span class="title-icon">🚀</span> Featured Projects</h2>
+            <div class="projects-grid">
+                <!-- project cards -->
+                <div class="project-card scale-in stagger-1">
+                    <div class="project-image" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                        <div class="project-icon">🛡️</div>
+                        <div class="project-overlay"><a href="https://github.com/BlessingMokoena/SimulatedFirewall.git" target="_blank" rel="noopener noreferrer" class="project-link">View Project →</a></div>
+                    </div>
+                    <div class="project-info">
+                        <h3>SimulatedFirewall</h3>
+                        <p>A Python-based simulated firewall application demonstrating packet filtering, rule enforcement, and network security concepts.</p>
+                        <div class="project-tags"><span>Python</span><span>Networking</span><span>Security</span></div>
+                    </div>
+                </div>
+                <div class="project-card scale-in stagger-2">
+                    <div class="project-image" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <div class="project-icon">🔓</div>
+                        <div class="project-overlay"><a href="https://github.com/BlessingMokoena/PasswordCracker.git" target="_blank" rel="noopener noreferrer" class="project-link">View Project →</a></div>
+                    </div>
+                    <div class="project-info">
+                        <h3>PasswordCracker</h3>
+                        <p>A Python-based simulation tool that demonstrates password-cracking methods to highlight security vulnerabilities and the importance of strong authentication.</p>
+                        <div class="project-tags"><span>Python</span><span>Security</span><span>Cryptography</span></div>
+                    </div>
+                </div>
+                <div class="project-card scale-in stagger-3">
+                    <div class="project-image" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <div class="project-icon">🥩</div>
+                        <div class="project-overlay"><a href="https://github.com/BlessingMokoena/Butcher.git" target="_blank" rel="noopener noreferrer" class="project-link">View Project →</a></div>
+                    </div>
+                    <div class="project-info">
+                        <h3>Butcher Shop Website</h3>
+                        <p>A responsive site for a local butcher shop with product showcases and contact pages. Built with clean layouts and simple navigation.</p>
+                        <div class="project-tags"><span>HTML</span><span>CSS</span><span>Responsive</span></div>
+                    </div>
+                </div>
+                <div class="project-card scale-in stagger-4">
+                    <div class="project-image" style="background: linear-gradient(135deg, #3b82f6, #2563eb);">
+                        <div class="project-icon">🏔️</div>
+                        <div class="project-overlay"><a href="https://github.com/BlessingMokoena/explore-360.git" target="_blank" rel="noopener noreferrer" class="project-link">View Project →</a></div>
+                    </div>
+                    <div class="project-info">
+                        <h3>Explore-360</h3>
+                        <p>An online store for outdoor gear with product showcases and an engaging shopping experience.</p>
+                        <div class="project-tags"><span>JavaScript</span><span>HTML</span><span>CSS</span></div>
+                    </div>
+                </div>
+                <div class="project-card scale-in stagger-5">
+                    <div class="project-image" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                        <div class="project-icon">🔐</div>
+                        <div class="project-overlay"><a href="https://github.com/BlessingMokoena/Password-Strength-Checker.git" target="_blank" rel="noopener noreferrer" class="project-link">View Project →</a></div>
+                    </div>
+                    <div class="project-info">
+                        <h3>Password Strength Checker</h3>
+                        <p>An interactive tool that analyzes password strength in real-time, providing feedback and security recommendations to help users create stronger passwords.</p>
+                        <div class="project-tags"><span>JavaScript</span><span>Security</span><span>Web App</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title fade-in-up"><span class="title-icon">📬</span> Get In Touch</h2>
+            <div class="contact-content">
+                <p class="contact-text fade-in-up stagger-1">Have a project in mind or want to collaborate? Feel free to reach out!</p>
+                <form class="contact-form fade-in-up stagger-2" id="contactForm" action="https://formsubmit.co/mtee658@gmail.com" method="POST">
+                    <input type="hidden" name="_subject" value="New message from Portfolio!">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_template" value="box">
+                    <div class="form-group"><input type="text" name="name" placeholder="Your Name" required></div>
+                    <div class="form-group"><input type="email" name="email" placeholder="Your Email" required></div>
+                    <div class="form-group"><textarea name="message" placeholder="Your Message" rows="5" required></textarea></div>
+                    <button type="submit" class="btn btn-primary"><span class="btn-icon">📤</span> Send Message</button>
+                </form>
+                <div class="social-links">
+                    <a href="https://github.com/BlessingMokoena" target="_blank" rel="noopener noreferrer" class="social-link pop-in stagger-1" title="GitHub"><span class="social-icon">🔗</span> GitHub</a>
+                    <a href="https://www.linkedin.com/in/mokoenablessing-it" target="_blank" rel="noopener noreferrer" class="social-link pop-in stagger-2" title="LinkedIn"><span class="social-icon">💼</span> LinkedIn</a>
+                    <a href="https://Instagram.com/_.koenaa" target="_blank" rel="noopener noreferrer" class="social-link pop-in stagger-3" title="Instagram"><span class="social-icon">📸</span> Instagram</a>
+               </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer fade-in-up">
+        <div class="container">
+            <p>&copy; <span id="footerYear"></span> Koena. All rights reserved.</p>
+            <p class="footer-subtitle">Built with 💙 for the cybersecurity community</p>
+        </div>
+    </footer>
+
+    <script>
+    /* ---------- JS: Wrapped to run after DOM ready ---------- */
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // ---------- Helper: dynamic footer year ----------
+        document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+        // ---------- Mobile Menu Toggle ----------
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        if (hamburger && navMenu) {
+            hamburger.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+            hamburger.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); hamburger.click(); }
+            });
+        }
+
+        // Close menu when clicking a link
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            });
+        });
+
+        // ---------- Smooth Scrolling ----------
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (!href || href === '#') return;
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    const offsetTop = target.offsetTop - 70;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                }
+            });
+        });
+
+        // ---------- Navbar background on scroll ----------
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (!navbar) return;
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(10, 14, 39, 0.98)';
+                navbar.style.boxShadow = '0 4px 30px rgba(0, 255, 65, 0.1)';
+            }
+        });
+
+        // ---------- ENHANCED SCROLL ANIMATIONS (Always trigger) ----------
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const animationObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                } else {
+                    entry.target.classList.remove('visible');
+                }
+            });
+        }, observerOptions);
+
+        const animatedElements = document.querySelectorAll(
+            '.fade-in-up, .fade-in-left, .fade-in-right, .scale-in, .pop-in'
+        );
+        
+        animatedElements.forEach(el => {
+            animationObserver.observe(el);
+        });
+
+        // ---------- Contact form submit ----------
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', (e) => {
+                const submitBtn = contactForm.querySelector('.btn-primary');
+                const originalHTML = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span class="btn-icon">⏳</span> Sending...';
+                submitBtn.disabled = true;
+            });
+        }
+
+        // ---------- Active nav link on scroll ----------
+        const navLinkArray = Array.from(navLinks);
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.pageYOffset >= sectionTop - 100) current = section.getAttribute('id');
+            });
+            navLinkArray.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').slice(1) === current) link.classList.add('active');
+            });
+        });
+
+        // ==================== ANIMATED NETWORK BACKGROUND ====================
+        const networkCanvas = document.getElementById('networkCanvas');
+        const ctx = networkCanvas && networkCanvas.getContext ? networkCanvas.getContext('2d') : null;
+
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 150 };
+
+        function resizeNetworkCanvas() {
+            if (!networkCanvas) return;
+            networkCanvas.width = window.innerWidth;
+            networkCanvas.height = window.innerHeight;
+        }
+        resizeNetworkCanvas();
+        window.addEventListener('resize', () => {
+            resizeNetworkCanvas();
+            initParticles();
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * networkCanvas.width;
+                this.y = Math.random() * networkCanvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > networkCanvas.width || this.x < 0) this.speedX *= -1;
+                if (this.y > networkCanvas.height || this.y < 0) this.speedY *= -1;
+
+                if (mouse.x !== null && mouse.y !== null) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < mouse.radius) {
+                        const force = (mouse.radius - distance) / mouse.radius;
+                        const angle = Math.atan2(dy, dx);
+                        this.x -= Math.cos(angle) * force * 2;
+                        this.y -= Math.sin(angle) * force * 2;
+                    }
+                }
+            }
+            draw() {
+                if (!ctx) return;
+                ctx.save();
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = 'rgba(0, 255, 65, 0.5)';
+                ctx.fillStyle = 'rgba(0, 255, 65, 0.8)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            if (!networkCanvas) return;
+            particles = [];
+            const numberOfParticles = Math.min(Math.floor((networkCanvas.width * networkCanvas.height) / 9000), 120);
+            for (let i = 0; i < numberOfParticles; i++) particles.push(new Particle());
+        }
+        if (ctx) initParticles();
+
+        function connectParticles() {
+            if (!ctx) return;
+            for (let a = 0; a < particles.length; a++) {
+                for (let b = a + 1; b < particles.length; b++) {
+                    const dx = particles[a].x - particles[b].x;
+                    const dy = particles[a].y - particles[b].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 120) {
+                        const opacity = 1 - (distance / 120);
+                        ctx.strokeStyle = `rgba(0, 217, 255, ${opacity * 0.5})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[a].x, particles[a].y);
+                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateNetwork() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, networkCanvas.width, networkCanvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            connectParticles();
+            requestAnimationFrame(animateNetwork);
+        }
+        if (ctx) animateNetwork();
+
+        // ==================== MATRIX RAIN EFFECT ====================
+        const matrixCanvas = document.getElementById('matrixCanvas');
+        const mctx = matrixCanvas && matrixCanvas.getContext ? matrixCanvas.getContext('2d') : null;
+
+        let matrixChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}".split('');
+        let fontSize = 14;
+        let columns = 0;
+        let drops = [];
+
+        function resizeMatrixCanvas() {
+            if (!matrixCanvas) return;
+            matrixCanvas.width = window.innerWidth;
+            matrixCanvas.height = window.innerHeight;
+            columns = Math.floor(matrixCanvas.width / fontSize);
+            drops = [];
+            for (let i = 0; i < columns; i++) drops[i] = Math.random() * -100;
+        }
+        resizeMatrixCanvas();
+        window.addEventListener('resize', () => {
+            resizeMatrixCanvas();
+        });
+
+        function drawMatrix() {
+            if (!mctx) return;
+            mctx.fillStyle = "rgba(10, 14, 39, 0.05)";
+            mctx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+            mctx.fillStyle = "#00ff41";
+            mctx.font = fontSize + "px monospace";
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                mctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+
+            requestAnimationFrame(drawMatrix);
+        }
+        if (mctx) requestAnimationFrame(drawMatrix);
+
+        // ---------- Typing effect for hero subtitle ----------
+        const subtitleElement = document.querySelector('.hero-subtitle');
+        if (subtitleElement) {
+            const subtitleText = subtitleElement.textContent;
+            subtitleElement.textContent = '';
+            let charIndex = 0;
+            function typeText() {
+                if (charIndex < subtitleText.length) {
+                    subtitleElement.textContent += subtitleText.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeText, 30);
+                }
+            }
+            setTimeout(typeText, 800);
+        }
+
+    }); // end DOMContentLoaded
+    </script>
+</body>
+</html>
